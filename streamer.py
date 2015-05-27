@@ -8,13 +8,11 @@ import subprocess
 import shutil
 import os
 import random
-from apscheduler.scheduler import Scheduler # Must be apscheduler 2.1.2 !
-from twython import TwythonStreamer
-from twython import Twython
-from twython import TwythonError
 from datetime import timedelta
+from apscheduler.scheduler import Scheduler # Must be apscheduler 2.1.2 !
+from twython import Twython, TwythonError, TwythonStreamer
 
-# Twitter Credentials & accounts
+#### Twitter Credentials & accounts
 apiKey = 'foobar'
 apiSecret = 'foobar'
 accessToken = 'foobar'
@@ -22,28 +20,33 @@ accessTokenSecret = 'foobar'
 bot, master = 'foobar', 'foobar'
 api = Twython(apiKey,apiSecret,accessToken,accessTokenSecret)
 
-# Path variables
+#### Path variables
 log = 'foobar'
 torrentsCompleted = 'foobar'
 torrentsProgress = 'foobar'
 owncloudTorrents = 'foobar'
+rkhunterLog = 'foobar'
 
-# Scheduler : daily tweets remover
+#### Scheduler : daily tweets remover
 sched = Scheduler()
 
 @sched.interval_schedule(hours=24)
 def delete_tweets():
-        user_timeline = api.get_user_timeline(screen_name=bot, count=100)
-        for tweets in user_timeline:
-                api.destroy_status(id=tweets['id_str'])
+    user_timeline = api.get_user_timeline(screen_name=bot, count=100)
+    for tweets in user_timeline:
+        api.destroy_status(id=tweets['id_str'])
+def delete_log():
+    f = open(log, 'w')
+    f.close()
 
-sched.start()
 
-# Stream filter
-FOLLOW = api.show_user(screen_name=master)
+sched.start() # Comment it if you don't want to use it
+
+#### Stream filter
+FOLLOW = str(int(api.show_user(screen_name=master))
 TERMS = '@' + bot
 
-# Functions
+#### Functions
 def giveUptime() :
     with open('/proc/uptime', 'r') as f:
         uptime_seconds = float(f.readline().split()[0])
@@ -63,8 +66,8 @@ def speedtest() :
     return output
 
 def checkMalwares() :
-    output1 = subprocess.check_output(["grep", "Possible", "/var/log/rkhunter.log"])
-    output2 = subprocess.check_output(["grep", "Suspect", "/var/log/rkhunter.log"])
+    output1 = subprocess.check_output(["grep", "Possible", rkhunterLog])
+    output2 = subprocess.check_output(["grep", "Suspect", rkhunterLog])
     if (output1[30] == '0') and (output2[26] == '0') :
         output = "No rootkits, no supect files. Nothing to worry about."
     else :
@@ -95,7 +98,7 @@ def updateWithRandom(output):
     output = output + '\n' + '#' + str(random.randint(1,9999))
     api.update_status(status=output)
 
-# Answer function
+#### Answer function
 def answer(tweet) :
 
     if 'toast' in tweet:
@@ -135,7 +138,7 @@ def answer(tweet) :
     else :
         updateWithRandom("I'm afraid I don't understand...")
 
-# Streamer
+#### Streamer
 class TweetStreamer(TwythonStreamer):
     def on_success(self, data):
         if ('text' in data) and (TERMS in data['text']):
