@@ -151,7 +151,7 @@ class TweetStreamer(TwythonStreamer):
     def on_error(self, status_code, data):
         f = open(log, 'a')
         errorLog2 = 'Error at ' + datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S') + ' : ' + status_code + '\n'
-        f.write(errorLog)
+        f.write(errorLog2)
         f.close()
         #print status_code
         self.disconnect()
