@@ -39,7 +39,6 @@ def delete_log():
     f = open(log, 'w')
     f.close()
 
-
 sched.start() # Comment it if you don't want to use it
 
 #### Stream filter
