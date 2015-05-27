@@ -20,3 +20,6 @@ Lancez le script (pour la première fois, mieux vaut le contrôler ainsi), si ri
 Par défaut, le bot répond à une action (cf. le script) quand le compte 'master' envoie un tweet mentionnant (@) le compte 'bot'. Pour savoir si tout fonctionne correctement, envoyez @bot toast. Le bot devra répondre en tweetant "Tell me what I've to do...".
 
 ___NOTE___: certains tweets contiennent des nombres aléatoirement générés entre 1 et 9999 (modifiable, évidemment). C'est simplement pour contourner la limitation de Twitter qui restreint les tweets identiques à un temps... indéfini. Pour que le bot puisse fonctionner correctement et dans la durée, ce fut nécessaire.
+
+### LICENSE
+Ce logiciel est modestement mis à disposition sous la license WTFPL. Faites-en ce que vous en voulez. Je m'en tape, vraiment, et c'est pas comme si ce script allait révolutionner le monde du monitoring.
