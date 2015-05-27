@@ -11,7 +11,7 @@ Drogon-Twitter nécessite pour le moment une version de Python 2.7 fonctionnelle
 ### How to
 Avant de lancer quoique ce soit, vérifiez que les variables correspondent bien à votre configuration actuelle. Vous devrez certainement créer une application Twitter pour compléter apiKey, apiSecret, accessToken et acessTokenSecret. Vous ne devriez avoir aucun mal à utiliser le reste. Les variables doivent pointer vers des dossiers et des fichiers EXISTANTS même s'ils sont vides.
 
-___NOTE___ : le script est adapté à mon usage personnel, c'est-à-dire que j'apprécie séparer Transmision de Owncloud, et j'utilise rkhunter avec cron.daily.
+___NOTE___ : le script est adapté à mon usage personnel, c'est-à-dire que j'apprécie par exemple séparer Transmission de Owncloud, et j'utilise rkhunter avec cron.daily.
 
 ___NOTE___ : veuillez utiliser un compte réservé à votre bot. Le script est destiné à cet usage, avec une interaction avec votre compte principal. De plus, le script supprime tous vos tweets dans un délai de 24h pour nettoyer le compte bot et éviter l'accumulation de tweets. Désactivez le scheduler si vous utilisez votre compte personnel...
 
