@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # REQUIRED IMPORTS
 import time
@@ -8,39 +8,39 @@ import subprocess
 import shutil
 import os
 import random
-import datetime
-from datetime import timedelta
-from apscheduler.scheduler import Scheduler # Must be apscheduler 2.1.2 !
+from datetime import timedelta, datetime
+from apscheduler.schedulers.background import BackgroundScheduler
 from twython import Twython, TwythonError, TwythonStreamer
 
 #### Twitter Credentials & accounts
-apiKey = 'foobar'
-apiSecret = 'foobar'
-accessToken = 'foobar'
+apiKey            = 'foobar'
+apiSecret         = 'foobar'
+accessToken       = 'foobar'
 accessTokenSecret = 'foobar'
-bot, master = 'foobar', 'foobar'
-api = Twython(apiKey,apiSecret,accessToken,accessTokenSecret)
+bot, master       = 'foobar', 'foobar'
+api               = Twython(apiKey,apiSecret,accessToken,accessTokenSecret)
 
 #### Path variables
-log = 'foobar'
+log               = 'foobar'
 torrentsCompleted = 'foobar'
-torrentsProgress = 'foobar'
-owncloudTorrents = 'foobar'
-rkhunterLog = 'foobar'
+torrentsProgress  = 'foobar'
+owncloudTorrents  = 'foobar'
+rkhunterLog       = 'foobar'
 
-#### Scheduler : daily tweets remover
-sched = Scheduler()
-
-@sched.interval_schedule(hours=24)
+#### Scheduler : daily tweets & log remover
 def delete_tweets():
     user_timeline = api.get_user_timeline(screen_name=bot, count=100)
     for tweets in user_timeline:
         api.destroy_status(id=tweets['id_str'])
+
 def delete_log():
     f = open(log, 'w')
     f.close()
 
-sched.start() # Comment it if you don't want to use it
+scheduler = BackgroundScheduler()
+scheduler.add_job(delete_tweets, 'interval', hours=24)
+scheduler.add_job(delete_log, 'interval', hours=24)
+scheduler.start() # Comment it if you don't want to use it
 
 #### Stream filter
 FOLLOW = str(int(api.show_user(screen_name=master)['id_str']))
@@ -143,18 +143,16 @@ class TweetStreamer(TwythonStreamer):
     def on_success(self, data):
         if ('text' in data) and (TERMS in data['text']):
             f = open(log, 'a')
-            infoLog = 'Received at ' + datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S') + ' : ' + data['text'] + '\n'
+            infoLog = 'Received at ' + str(datetime.now()) + ' : ' + data['text'] + '\n'
             f.write(infoLog)
             f.close()
-            #print data['text'].encode('utf-8')
             answer(data['text'])
 
     def on_error(self, status_code, data):
         f = open(log, 'a')
-        errorLog2 = 'Error at ' + datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S') + ' : ' + status_code + '\n'
+        errorLog2 = 'Error at ' + str(datetime.now()) + ' : ' + status_code + '\n'
         f.write(errorLog2)
         f.close()
-        #print status_code
         self.disconnect()
 
 stream = TweetStreamer(apiKey,apiSecret,accessToken,accessTokenSecret)
@@ -163,8 +161,7 @@ try :
     stream.statuses.filter(follow=FOLLOW)
 except TwythonError as e :
     f = open(log, 'a')
-    errorLog = 'Error at ' + datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S') + ' : ' + e
+    errorLog = 'Error at ' + str(datetime.now()) + ' : ' + str(e)
     f.write(errorLog)
     f.write('\n Valar Morghulis. \n \n \n')
     f.close()
-    #print e
