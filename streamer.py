@@ -8,6 +8,7 @@ import subprocess
 import shutil
 import os
 import random
+import datetime
 from datetime import timedelta
 from apscheduler.scheduler import Scheduler # Must be apscheduler 2.1.2 !
 from twython import Twython, TwythonError, TwythonStreamer
@@ -42,7 +43,7 @@ def delete_log():
 sched.start() # Comment it if you don't want to use it
 
 #### Stream filter
-FOLLOW = str(int(api.show_user(screen_name=master))
+FOLLOW = str(int(api.show_user(screen_name=master)['id_str']))
 TERMS = '@' + bot
 
 #### Functions
@@ -123,13 +124,13 @@ def answer(tweet) :
         if 'check' in tweet: 
             inProgress = numberFiles(torrentsProgress)
             checkedTorrents = ' ' + str(inProgress) + ' torrent(s) are in progress.'
-            whatDone = ' checked '
+            whatDone = ' checked'
         elif ('copy' in tweet) or ('save' in tweet):
             movetree(torrentsCompleted, owncloudTorrents, False)
-            whatDone, checkedTorrents = ' copied ', ''
+            whatDone, checkedTorrents = ' copied', ''
         elif ('move' in tweet) or ('clean' in tweet):
             movetree(torrentsCompleted, owncloudTorrents, True)
-            whatDone, checkedTorrents = ' moved ', ''
+            whatDone, checkedTorrents = ' moved', ''
 
         outputTorrents = 'Torrents have been' + whatDone + ', sir.' + checkedTorrents
         updateWithRandom(outputTorrents)
