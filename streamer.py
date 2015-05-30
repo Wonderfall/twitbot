@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 
-### REQUIRED IMPORTS
-import time
-import sys
-import psutil
-import subprocess
-import shutil
-import os
-import random
+### REQUIRED IMPORT
+import time, sys, psutil, subprocess, shutil, os, random
 from datetime import timedelta, datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from twython import Twython, TwythonError, TwythonStreamer
@@ -48,57 +42,54 @@ TERMS = '@' + BOT
 
 #### Functions
 def append_log(to_write):
-    f = open(LOG, 'a')
-    f.write('At ' + str(datetime.now()) + ' : ' + to_write + '\n')
-    f.close()
+    with open(LOG, 'a') as f:
+        f.write('At ' + str(datetime.now()) + ' : ' + to_write + '\n')
 
 def tweet_random(output=None):
     if output == None: output = 'Roah. Tell me something understable.'
     api.update_status(status=output + '\n' + '#' + str(random.randint(1,9999)))
 
-def give_uptime() :
+def give_uptime():
     with open('/proc/uptime', 'r') as f:
-        uptime_seconds = float(f.readline().split()[0])
-        uptime_string = "Uptime : " + str(timedelta(seconds = uptime_seconds))
-    tweet_random(uptime_string)
+        uptime_seconds = int(float(f.readline().split()[0]))
+        tweet_random("I'm up since " + str(timedelta(seconds=uptime_seconds)))
 
-def give_cpuload() :
-    tweet_random("CPU load : " + str(psutil.cpu_percent(interval=1)) + " %")
+def give_cpuload():
+    tweet_random("CPU load : " + str(psutil.cpu_percent(interval=2)) + " %")
 
-def give_RAMusage() :
+def give_RAMusage():
     tweet_random("RAM usage : " + str(psutil.phymem_usage().percent) + " %")
 
-def speedtest() :
-    tweet_random(subprocess.check_output(["speedtest-cli", "--simple"]).decode('utf-8'))
+def speedtest():
+    tweet_random(subprocess.check_output(["speedtest-cli", "--simple"]).decode('utf-8')[:-1])
 
-def check_malwares() :
-    check1 = subprocess.check_output(["grep", "Possible", RKHUNTER_LOG]).decode('utf-8')
-    check2 = subprocess.check_output(["grep", "Suspect", RKHUNTER_LOG]).decode('utf-8')
-    if (check1[30] == '0') and (check2[26] == '0'):
+def check_malwares():
+    f = open(RKHUNTER_LOG).read()
+    if ('rootkits: 0' in f) and ('files: 0' in f):
         tweet_random("No rootkits, no supect files. Nothing to worry about.")
     else:
         tweet_random("A son of bitch is annoying me. Check me as soon as you can.")
 
-def move_torrents(src=TORRENTS_COMPLETED, dst=OWNCLOUD_TORRENTS, symlinks=False, ignore=None):
-    for item in os.listdir(src):
-        s = os.path.join(src, item)
-        d = os.path.join(dst, item)
+def move_torrents():
+    for item in os.listdir(TORRENTS_COMPLETED):
+        s = os.path.join(TORRENTS_COMPLETED, item)
+        d = os.path.join(OWNCLOUD_TORRENTS, item)
         if os.path.exists(d):
             try:
                 shutil.rmtree(d)
             except Exception as e:
                 os.unlink(d)
         if os.path.isdir(s):
-            shutil.copytree(s, d, symlinks, ignore)
+            shutil.copytree(s, d, False, None)
         else:
             shutil.copy2(s, d)
-    shutil.rmtree(src)
-    tweet_random('Torrent(s) moved, sir. Being synchronized.')
+    shutil.rmtree(TORRENTS_COMPLETED)
+    tweet_random('Torrent(s) moved, sir, synchronizing to your cloud folder.')
 
-def downloading_torrents(src=TORRENTS_PROGRESS):
-    tweet_random(str(len(os.listdir(src))) + ' torrent(s) are downloading, sir.')
+def downloading_torrents():
+    tweet_random(str(len(os.listdir(TORRENTS_PROGRESS))) + ' torrent(s) are downloading, sir.')
 
-#### Associated words
+#### Associated words & answer function
 options = {
     'toast'         : tweet_random,
     'uptime'        : give_uptime,
@@ -112,7 +103,6 @@ options = {
 
 words_options = options.keys()
 
-#### Answer function
 def answer(tweet):
     splited_tweet = tweet.split()
     for i in range(len(splited_tweet)):
