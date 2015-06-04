@@ -52,7 +52,7 @@ def tweet_random(output=None):
 def give_uptime():
     with open('/proc/uptime', 'r') as f:
         uptime_seconds = int(float(f.readline().split()[0]))
-        tweet_random("I've been up since " + str(timedelta(seconds=uptime_seconds)))
+        tweet_random("I've been up for " + str(timedelta(seconds=uptime_seconds)))
 
 def give_cpuload():
     tweet_random("CPU load : " + str(psutil.cpu_percent(interval=2)) + " %")
