@@ -28,7 +28,7 @@ def delete_tweets():
 def delete_log():
     open(LOG, 'w').close()
 
-def check_intrusions(errors=0, level=10):
+def check_intrusions(level=10):
     f = open(OSSEC_LOG).read()
     for i in range(7):
         if ('(level ' + str(level+i) + ')') in f:
@@ -76,7 +76,6 @@ def speedtest():
     tweet_random(subprocess.check_output(["speedtest-cli", "--simple"]).decode('utf-8')[:-1])
 
 def check_system():
-    check_intrusions(); check_updates()
     if (check_intrusions() and check_updates()) != True:
         tweet_random("Everything is OK.")
 
