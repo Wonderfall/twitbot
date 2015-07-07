@@ -38,8 +38,8 @@ def check_intrusions(level=10):
 
 def check_updates():
     subprocess.call(['aptitude', 'update'])
-    f = subprocess.check_output(['apt-get', 'upgrade', '--assume-no']).decode('utf-8')
-    if '0 not upgraded' not in f:
+    f = subprocess.check_output(['aptitude', 'upgrade', '-s', '-y']).decode('utf-8')
+    if '0 packages upgraded' not in f:
         tweet_random('@' + MASTER + ' Uptates are available.')
         return True
 
