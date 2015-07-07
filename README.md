@@ -1,4 +1,4 @@
-# Drogon-Twitter (French translation)
+# Twitter-Monitoring (French translation)
 Drogon-Twitter est un robot pour twitter écrit en python, utilisant principalement le dictionnaire offert par twython pour communiquer avec l'API de Twitter. Ce bot est simplement écrit dans un cadre d'usage personnel. Je trouve ça amusant, et puis ça peut toujours être utile pour certaines tâches, qui sait. En effet, Drogon-Twitter a pour le moment, la principale tâche de faire du monitoring. Mais ce serait négliger d'autres possibilités ! Je ne m'y connais pas plus que ça en Python, mais j'ai essayé de faire quelque chose de potable et de marrant. C'est plus un défi personnel d'aboutir à quelque chose d'original qu'autre chose, pour le moment.
 
 ### Requirements
