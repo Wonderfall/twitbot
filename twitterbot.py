@@ -76,7 +76,7 @@ def speedtest():
     tweet_random(subprocess.check_output(["speedtest-cli", "--simple"]).decode('utf-8')[:-1])
 
 def check_system():
-    if (check_intrusions() and check_updates()) != True:
+    if (check_intrusions() != True) and (check_intrusions() != True):
         tweet_random("Everything is OK.")
 
 #### Associated words & answer function
