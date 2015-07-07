@@ -78,7 +78,7 @@ def speedtest():
 def check_system():
     if (check_intrusions() != True) and (check_updates() != True):
         tweet_random("Everything is OK.")
-    elif (check_updates() == True): pass
+    elif check_updates(): pass
 
 #### Associated words & answer function
 options = {
