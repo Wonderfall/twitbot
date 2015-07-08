@@ -109,7 +109,7 @@ class TweetStreamer(TwythonStreamer):
             append_log(BOT + ' answered.')
 
     def on_error(self, status_code, data):
-        append_log('had to disconnect.')
+        append_log('had to disconnect because of error ' + status_code)
         self.disconnect()
 
 stream = TweetStreamer(API_KEY,API_SECRET,ACCESS_TOKEN,ACCESS_TOKEN_SECRET)
