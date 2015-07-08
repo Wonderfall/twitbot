@@ -76,13 +76,12 @@ def speedtest():
     tweet_random(subprocess.check_output(["speedtest-cli", "--simple"]).decode('utf-8')[:-1])
 
 def check_system():
-    if check_intrusions() != True:
-        if check_updates() != True:
-            tweet_random("Everything is OK.")
-    else: check_updates()
+    if (check_intrusions() != True) and (check_updates() != True):
+        tweet_random("Everything is OK.")
+    elif check_updates(): pass
 
 #### Associated words & answer function
-commands = {
+options = {
     'toast'         : tweet_random,
     'uptime'        : give_uptime,
     'stats'         : give_systats,
@@ -90,15 +89,14 @@ commands = {
     'checksys'      : check_system
 }
 
-keys = list(commands.keys())
+words_options = options.keys()
 
 def answer(tweet):
-    for i in range(len(keys)):
-        if keys[i] in tweet:
-            append_log("executing " + str(commands[keys[i]]))
-            commands[keys[i]]()
+    splited_tweet = tweet.split()
+    for i in range(len(splited_tweet)):
+        if splited_tweet[i] in words_options:
+            options[splited_tweet[i]]()
             break
-    else: tweet_random("What? I don't understand.")
 
 #### Streamer
 class TweetStreamer(TwythonStreamer):
@@ -106,10 +104,8 @@ class TweetStreamer(TwythonStreamer):
         if ('text' in data) and (TERMS in data['text']):
             append_log('tweet from ' + MASTER + ' to ' + BOT + ' received.')
             answer(data['text'])
-            append_log(BOT + ' answered.')
 
     def on_error(self, status_code, data):
-        append_log('had to disconnect.')
         self.disconnect()
 
 stream = TweetStreamer(API_KEY,API_SECRET,ACCESS_TOKEN,ACCESS_TOKEN_SECRET)
