@@ -55,7 +55,7 @@ def give_cpu_temp(id=''):
     with open('/sys/class/thermal/thermal_zone2/temp', 'r') as f:
         temperature = int(f.read())*(10**-3)
 
-    temp_qualitative = "J'ai un peu chaud... poke @" + MASTER if temperature >= 60 else "Tout va bien."
+    temp_qualitative = "J'ai un peu chaud... poke @" + MASTER if temperature >= 70 else "Tout va bien."
     rand_tweet(id, "Ma température CPU est de " + str(temperature) + "°C. " + temp_qualitative)
 
 def give_systats(id=''):
