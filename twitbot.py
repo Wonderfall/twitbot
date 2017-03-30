@@ -52,7 +52,7 @@ def give_uptime(id=''):
 def give_cpu_temp(id=''):
     append_log("triggered " + str(give_cpu_temp))
 
-    with open('/sys/class/thermal/thermal_zone2/temp', 'r') as f:
+    with open('/sys/class/thermal/thermal_zone0/temp', 'r') as f:
         temperature = int(f.read())*(10**-3)
 
     temp_qualitative = "J'ai un peu chaud... poke @" + MASTER if temperature >= 70 else "Tout va bien."
